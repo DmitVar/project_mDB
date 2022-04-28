@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () =>{
           filmInput = filmForm.film__name,
           checkbox = filmForm.querySelector('[type="checkbox"]'),
           addFilmButton = document.getElementById('add__film');
+   
     function addFilmNameInMovieDB(){   
         const favorite = checkbox.checked;
         let newFilm = filmInput.value;
@@ -27,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () =>{
             movieDB.movies.push(newFilm);
             movieDB.movies.sort();
             createMoviList(movieDB.movies, promoInteractiveList);
+        }
+        if(favorite){
+            console.log('Добавляем любимый фильм');
         }
         
         filmInput.value = "";
@@ -42,12 +46,23 @@ document.addEventListener('DOMContentLoaded', () =>{
     promoBg.style.backgroundImage = 'url("img/bg.jpg")';
     
     function createMoviList(films, parent){
+        films.sort();
             parent.innerHTML = "";
             films.forEach((el, index) => {
             let li = document.createElement('li');
             li.classList.add('promo__interactive-item');
             li.textContent = `${index + 1} ${el}`;
             parent.append(li);
+            let deleteDiv = document.createElement('div');
+            deleteDiv.classList.add('delete');
+            li.append(deleteDiv);
+        });
+        document.querySelectorAll('.delete').forEach((el, index) =>{
+            el.addEventListener('click',() =>{
+                el.parentElement.remove();
+                movieDB.movies.splice(index, 1);
+                createMoviList(films, parent);
+            });
         });
     }
     createMoviList(movieDB.movies, promoInteractiveList);
